@@ -13,6 +13,12 @@ ZabbixToken = os.getenv("Zabbix_API_Token")
 #api requirements
 ZabbixURL= os.getenv("Zabbix_URL")
 WebexRoomID = os.getenv("Webex_Room_Id")
+RTPRoomID = os.getenv("RTP_Room_Id")
+SJCRoomID = os.getenv("SJC_Room_Id")
+LONRoomID = os.getenv("LON_Room_Id")
+SNGRoomID = os.getenv("SNG_Room_Id")
+SYDRoomID = os.getenv("SYD_Room_Id")
+
 #database information
 DatabaseName = os.getenv("Database_Name")
 DatabaseUsername = os.getenv("Database_Username")
@@ -43,7 +49,7 @@ conn = p.connect(
     )
 
 
-#getting zabbix all severity 5 (disaster alerts)
+#getting zabbix all severity 5 (disaster alerts) for vmware hosts
 def getHostDownIssues(): 
     request_param = {
                     "output" : ["name","eventid","clock"],       
@@ -52,8 +58,18 @@ def getHostDownIssues():
                      }
     problems = apiZabbix.problem.get( request_param ) 
     return problems
+#getting zabbix all severity 5 (disaster alerts) for site
+def getSiteIssues(): 
+    request_param = {
+                    "output" : ["name","eventid","clock"],       
+                    "severities" : 5,
+                    "groupids" : [557],
+                    "selectTags": "extend"
+                     }
+    problems = apiZabbix.problem.get( request_param ) 
+    return problems
 
-
+#########################################HOSTS##################################################
 def getCurrentProblems():
     data = []
     internalList = []
@@ -70,10 +86,28 @@ def getCurrentProblems():
         else:
             pass
     return data
+#########################################SITE##################################################
+def getSiteProblems():
+    data = []
+    internalList = []
+    for element in getHostDownIssues():
+        internalList.append(element["eventid"])
+        internalList.append(element["name"])
+        internalList.append(element["clock"])
+        for tag in element["tags"]:
+            if tag["tag"] == "site":
+                internalList.append(tag["value"])
+            if tag["tag"] == "visname":
+                internalList.append(tag["value"])
+            else:
+                pass
+        data.append(internalList)
+        internalList = []
+    return data
 
 #print(prepareDBdata())
 
-
+# connecting to db to check host alerts
 def getDBexistingProblems():
 
     cur = conn.cursor()
@@ -86,6 +120,18 @@ def getDBexistingProblems():
     
     return(dbdata)
 
+# connecting to db to check site alerts
+def getDBSiteProblems():
+
+    cur = conn.cursor()
+    # Create table with pdu_number
+    cur.execute("""
+        SELECT eventid FROM sitealerts;
+        """)
+    dbdata = cur.fetchall()
+    cur.close()
+    
+    return(dbdata)
 
 def alertChecking(zabbixData, postgresData):
     postgres_ids = {item[0] for item in postgresData}
