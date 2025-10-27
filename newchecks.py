@@ -241,9 +241,9 @@ def alertCheckingSites(zabbixData, postgresData):
                     if site == "UNKNOWN" or hostname == "UNKNOWN":
                         room_id = ADMINRoomID
                         Message = missingInfoMessage.format(site, hostname, event_name)
-                        # --- Add ADMIN dashboard link if it exists ---
-                        if ZabbixURL_ADMIN: # <-- MODIFIED
-                            Message += f"\nMissing info Dashboard:({ZabbixURL_ADMIN})\n\n"
+                        
+                        if ZabbixURL_ADMIN: 
+                            Message += f"\nMissing info Dashboard:({ZabbixURL_ADMIN})\n:q\n"
                     else:
                         # If info is present, use the map. If not in map, use WebexRoomID (general)
                         room_id = siteRoomMap.get(site, WebexRoomID) 
@@ -286,7 +286,8 @@ def alertCheckingSites(zabbixData, postgresData):
                         if dashboard_url:
                             Message += f"\nSITE Dashboard: ({dashboard_url})\n\n"
 
-                    apiWebex.messages.create(roomId=room_id, text=Message)
+                    apiWebex.messages.create(roomId=room_id, markdown=Message )
+                    
                 
                 cur.execute(siteAlertToBeRemoved, (id,))
         
