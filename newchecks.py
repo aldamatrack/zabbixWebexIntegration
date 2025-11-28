@@ -18,6 +18,7 @@ SJCRoomID = os.getenv("SJC_Room_Id")
 LONRoomID = os.getenv("LON_Room_Id")
 SNGRoomID = os.getenv("SNG_Room_Id")
 SYDRoomID = os.getenv("SYD_Room_Id")
+IDEVRoomID = os.getenv("IDEV_Room_Id")
 CPOCRoomID = os.getenv("CPOC_Room_Id")
 ADMINRoomID = os.getenv("ADMIN_Room_Id") # Room for alerts with missing data
 
@@ -27,6 +28,7 @@ ZabbixURL_SJC = os.getenv("ZabbixURL_SJC")
 ZabbixURL_LON = os.getenv("ZabbixURL_LON")
 ZabbixURL_SNG = os.getenv("ZabbixURL_SNG")
 ZabbixURL_SYD = os.getenv("ZabbixURL_SYD")
+ZabbixURL_IDEV = os.getenv("ZabbixURL_IDEV")
 ZabbixURL_CPOC = os.getenv("ZabbixURL_CPOC")
 ZabbixURL_ADMIN = os.getenv("ZabbixURL_ADMIN") 
 
@@ -43,6 +45,7 @@ siteRoomMap = {
     "LON": LONRoomID,
     "SNG": SNGRoomID,
     "SYD": SYDRoomID,
+    "IDEV": IDEVRoomID,
     "CPOC": CPOCRoomID
 }
 
@@ -53,6 +56,7 @@ siteDashboardMap = {
     "LON": ZabbixURL_LON,
     "SNG": ZabbixURL_SNG,
     "SYD": ZabbixURL_SYD,
+    "IDEV": ZabbixURL_IDEV,
     "CPOC": ZabbixURL_CPOC,
 }
 
